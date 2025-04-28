@@ -9,50 +9,38 @@ class Questionscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentQuestion = QuestionsList[questionIndex];
+    final shuffledAnswers = currentQuestion.getShuffledAnswers();
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-               Colors.blue, Colors.purpleAccent,
-            ],
+            colors: [Colors.blue, Colors.purpleAccent],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-       
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Question Counter
             Container(
               padding: const EdgeInsets.all(20),
               child: Text(
-                'Question ${questionIndex + 1} of ${QuestionsList.length}',
+                currentQuestion.text,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 24,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            // Question Text
-            Text(
-              QuestionsList[questionIndex].text,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(height: 30),
-            // Answer Buttons
-            ...QuestionsList[questionIndex].answers.map((answer) {
+            ...shuffledAnswers.map((answer) {
               return Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                 child: ElevatedButton(
                   onPressed: () => onSelectAnswer(answer),
                   style: ElevatedButton.styleFrom(
@@ -73,12 +61,14 @@ class Questionscreen extends StatelessWidget {
                 ),
               );
             }).toList(),
-            // Progress Indicator
             const SizedBox(height: 20),
-            LinearProgressIndicator(
-              value: (questionIndex + 1) / QuestionsList.length,
-              backgroundColor: Colors.white12,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: LinearProgressIndicator(
+                value: (questionIndex + 1) / QuestionsList.length,
+                backgroundColor: Colors.white12,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
             ),
           ],
         ),
